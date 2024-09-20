@@ -1,5 +1,5 @@
 import { ID, Query } from "node-appwrite"
-import { users, account } from "../appwrite.config"
+import { users, account, database, DATABASE_ID, CATEGORY_COLLECTION_ID } from "../appwrite.config"
 import { parseStringify } from "../utils"
 
 export const createUser = async (user: CreateUserParams) => {
@@ -46,21 +46,50 @@ export const loginUser = async (email: string, password: string) => {
 // console.log(sessionId);
 
 
-// export const logoutUser = async () => {
+// export const logoutUser = async (userId: string) => {
 //     try {
-//         const sessionId = sessionStorage.getItem('sessionId');
-        
-//         if (!sessionId) {
-//             throw new Error('No session ID found. User may not be logged in.');
-//         }
-//         const result = await account.deleteSession(sessionId);
-//         console.log(result)
-//         return parseStringify(result);
+  
+//       const result = await account.deleteSession(userId);
+//       console.log("User session deleted successfully");
+//       return parseStringify(result);
 //     } catch (error) {
-//         console.error('Login error:', error);
+//       console.error("Error deleting user session:", error);
+//       throw error;
 //     }
 // }
 
-  // Example usage:
-//   login('user@example.com', 'password123');
+
+export const createCategory = async (data:{category: string}) => {
+    try {
+  
+        const response = await database.createDocument(
+            DATABASE_ID!,
+            CATEGORY_COLLECTION_ID!,
+            ID.unique(),
+            data
+        )
+        console.log(response);
+        return parseStringify(response);
+    } catch (error) {
+      console.error("Error deleting user session:", error);
+      throw error;
+    }
+}
+
+export const getCategory = async () => {
+    try {
+      const response = await database.listDocuments(
+        DATABASE_ID!,
+        CATEGORY_COLLECTION_ID!,
+        // [Query.equal("userId", [userId])]
+      );
+  
+      return parseStringify(response);
+    } catch (error) {
+      console.error(
+        "An error occurred while retrieving the patient details:",
+        error
+      );
+    }
+};
   

@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from '@/components/ui/button';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { PiNotepad } from "react-icons/pi";
 import {
     DropdownMenu,
@@ -14,8 +14,10 @@ import { useTheme } from "next-themes"
 // import { getUser } from "@/lib/actions/user.action"
 import CreateTaskButton from '@/components/CreateTaskButton';
 import SideBar from '@/components/SideBar';
-import { logoutUser } from '@/lib/appwrite.config';
+// import { logoutUser } from '@/lib/actions/user.action';
 import { useRouter } from 'next/navigation';
+import { LayoutList } from "lucide-react"
+import { getCategory } from '@/lib/actions/user.action';
 
 
 const Page = ({params: { userId }}: SearchParamProps) => {
@@ -23,35 +25,43 @@ const Page = ({params: { userId }}: SearchParamProps) => {
     // const user = await getUser(userId)
     console.log(userId)
 
-    const router = useRouter()
+    const category = useRef<{ category: string; }[] | undefined>([]);
 
-    async function logout(): Promise<void> {
-        try {
-            const sessionId = sessionStorage.getItem('sessionId');
-        
-            if (!sessionId) {
-                throw new Error('No session ID found. User may not be logged in.');
+    const sessionEmail = sessionStorage.getItem('sessionEmail');
+
+    useEffect(() => {
+        const fetchCategory = async () => {
+            try {
+                const response = await getCategory();
+                // category.current = response?.documents;
+                let result: string[] = []
+                const a = response?.documents.map(e => (
+                    // result.push(e.category)
+                    {category: e.category}
+                ))
+                category.current = a
+                console.log(category.current);
+            // console.log(a);
+                // console.log(response?.documents);
+            } catch (error) {
+                console.error(error);
             }
-            await logoutUser(sessionId);
-            router.push("/")
-          // Additional logout logic for your frontend
-        } catch (error) {
-          console.error("Logout failed:", error);
-          throw error;
-        }
-      }
+        };
+        fetchCategory();
+    }, []);
 
     return (
         <main className="h-screen max-h-screen remove-scrollbar">
             
             <section className='container flex justify-between items-center py-4 '>
                 <div className='flex space-x-1'>
-                    <PiNotepad className="text-2xl dark:text-white" />
-                    <a href='/'><h1 className="">ACTRACKER</h1></a>
+                    {/* <LayoutList /> */}
+                    <a href='/'><h1 className="font-bold text-xl">ACTRACKER</h1></a>
                 </div>
                 <div className='flex items-center space-x-4'>
-                    <div>
-                        <h1>Welcome!</h1>
+                    <div className='flex items-center space-x-3'>
+                        {/* <h1>Welcome!</h1> */}
+                        <h1>{sessionEmail}</h1>
                     </div>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -73,7 +83,7 @@ const Page = ({params: { userId }}: SearchParamProps) => {
                         </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <Button variant="outline" className='bg-white' onClick={logout}>Logout</Button>
+                    <Button variant="outline" className='bg-white'>Logout</Button>
                 </div>
             </section>
             

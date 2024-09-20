@@ -46,6 +46,7 @@ const RegisterForm = () => {
                 const login = await loginUser(values.email, values.password)
                 if (login) {
                     sessionStorage.setItem('sessionId', login.$id);
+                    sessionStorage.setItem('sessionEmail', login.providerUid);
                     router.push(`/users/${login.userId}/register`);
                 }
             } else {
@@ -56,7 +57,9 @@ const RegisterForm = () => {
                 };
                 const newUser = await createUser(user);
                 if (newUser) {
-                  router.push(`/users/${newUser.$id}/register`);
+                    sessionStorage.setItem('sessionId', newUser.$id);
+                    // sessionStorage.setItem('sessionEmail', newUser.providerUid);
+                    router.push(`/users/${newUser.$id}/register`);
                 }
             }
             

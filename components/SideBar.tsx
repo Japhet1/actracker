@@ -5,6 +5,9 @@ import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import TaskList from './TaskList';
 
+interface SideBarProp {
+
+}
 
 const SideBar = () => {
     return (

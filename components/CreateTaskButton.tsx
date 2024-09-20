@@ -23,6 +23,7 @@ import {
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 import { FileCheck2, List } from "lucide-react"
+import { createCategory } from '@/lib/actions/user.action';
   
 
 const CreateTaskButton: React.FC = () => {
@@ -37,13 +38,19 @@ const CreateTaskButton: React.FC = () => {
         resolver: zodResolver(CategoryValidation),
         defaultValues: {
             category: "",
-        },
+        }
     })
 
     async function onSubmit(values: z.infer<typeof CategoryValidation>) {
         console.log(values)
-        form.reset()
+        try {
+            const result = await createCategory(values)
 
+            console.log(result)
+        } catch(error) {
+            console.log(error)
+        }
+        form.reset()
     }
 
     const toggleDialog = () => {
@@ -52,7 +59,6 @@ const CreateTaskButton: React.FC = () => {
     }
 
     const toggleDropdown = () => {
-        // title.current = "Add a task"
         setShowDrp(!showDrp);
     }
 
@@ -67,7 +73,6 @@ const CreateTaskButton: React.FC = () => {
                         <FileCheck2 size={15}/>
                         <h1>New Task</h1>
                     </Button>
-                    {/* <CreateTaskDialog/> */}
                 </div>
                 <div>
                     <DropdownMenu open={showDrp} onOpenChange={setShowDrp}>
@@ -82,23 +87,20 @@ const CreateTaskButton: React.FC = () => {
                             align="end" 
                             className="bg-white w-[280px] p-2"
                         >
-                            {/* <DropdownMenuLabel>Create a task manager category</DropdownMenuLabel> */}
                             <DropdownMenuSeparator />
-                            {/* <DropdownMenuItem> */}
-                            <Form {...form} >
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 flex-1">
-                                    <div >
-                                    <CustomFormField 
-                                        control={form.control} 
-                                        fieldType={FormFieldType.CATEGORYINPUT}
-                                        name="category"
-                                        placeholder="Add an click enter"
-                                    />
-                                    </div>
-                                    <SubmitButton isLoading={isLoading} click={toggleDropdown}>Add</SubmitButton>
-                                </form>
-                            </Form>
-                            {/* </DropdownMenuItem> */}
+                                <Form {...form} >
+                                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 flex-1">
+                                        <div >
+                                            <CustomFormField 
+                                                control={form.control} 
+                                                fieldType={FormFieldType.CATEGORYINPUT}
+                                                name="category"
+                                                placeholder="Add new category"
+                                            />
+                                        </div>
+                                        <SubmitButton isLoading={isLoading} click={toggleDropdown}>Add</SubmitButton>
+                                    </form>
+                                </Form>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
