@@ -19,8 +19,8 @@ import { Label } from "@/components/ui/label"
 import {Card,CardContent,CardDescription,CardFooter,CardHeader,CardTitle,
 } from "@/components/ui/card"
 import { Pencil, Trash2, Plus, MoreHorizontal, CreditCard, TableProperties, MoveRight } from 'lucide-react'
-import CreateTaskDialog from './CreateTaskDialog';
-import DeleteTask from './DeleteTask'
+import CreateTaskDialog from '../form/CreateTaskDialog';
+import DeleteTask from '../DeleteTask'
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -30,16 +30,17 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
+import GetUseContext from '@/components/context/GetUseContext';
 
-
-interface CardListProp {
+export interface CardListProp {
+    // key: string | undefined,
     id: string | undefined,
     task: string,
     description: string,
     assign: string,
-    createdAt: string | undefined,
-    submissionDate: string | undefined,
+    createdAt: Date | null,
+    submissionDate: Date | null,
     status: string | undefined,
     category: string | undefined
 }
@@ -48,14 +49,27 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
 
     const [showDlg, setShowDlg] = useState(false)
     const [deleteDlg, setDeleteDlg] = useState(false)
-
+    const { state } = GetUseContext()
     const title = useRef("")
+    const editData = useRef<CardListProp>()
+    const taskId = useRef<string | undefined>("")
     
     const toggleShowDlg = () => {
         title.current = "Edit task"
+        editData.current = {
+            id: id,
+            task: task,
+            description: description,
+            assign: assign,
+            createdAt: createdAt, 
+            submissionDate: submissionDate,
+            status: status,
+            category: category
+        }
         setShowDlg(!showDlg);
     }
     const toggleDeleteDlg = () => {
+        taskId.current = id
         setDeleteDlg(!deleteDlg);
     }
 
@@ -127,8 +141,8 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
                                         <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-orange-700'><MoveRight size={10} />In Progress</span></DropdownMenuItem>
                                         <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-green-700'><MoveRight size={10} />Complete</span></DropdownMenuItem>
                                     </DropdownMenuContent>
-                                    {showDlg && (<CreateTaskDialog title={title} showDlg={showDlg} toggleDlg={toggleShowDlg} />)}
-                                    {deleteDlg && (<DeleteTask showDlg={deleteDlg} toggleDeleteDlg={toggleDeleteDlg} />)}
+                                    {showDlg && (<CreateTaskDialog title={title} editData={editData} showDlg={showDlg} toggleDlg={toggleShowDlg} />)}
+                                    {deleteDlg && (<DeleteTask showDlg={deleteDlg} deleteId={taskId} toggleDeleteDlg={toggleDeleteDlg} />)}
                                 </DropdownMenu>
                             </div>
                         </div>
@@ -147,14 +161,14 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
                             <p className='text-dark-700 text-sm'>{assign}</p>
                         </div>
                         <div className='flex items-center justify-between'>
-                            <div className='text-sm'>
+                            {/* <div className='text-sm'>
                                 <Label className=''>Assigned Date</Label>
-                                <p className='text-dark-700'>{createdAt}</p>
+                                <p className='text-dark-700'>{createdAt ? createdAt.toLocaleDateString() : 'No Assigned Date'}</p>
                             </div>
                             <div className='text-sm'>
                                 <Label className=''>Submission Date</Label>
-                                <p className='text-dark-700'>{submissionDate}</p>
-                            </div>
+                                <p className='text-dark-700'>{submissionDate ? submissionDate.toLocaleDateString() : 'No Submission Date'}</p>
+                            </div> */}
                         </div>
 
                     </CardContent>

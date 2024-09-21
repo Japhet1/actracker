@@ -40,13 +40,14 @@ declare interface User extends CreateUserParams {
 // }
   
 declare type CreateTaskParams = {
-    userId: string;
+    userId: string | null;
     task: string;
     description: string;
     assignTo: string;
-    AassignDate: string;
-    submissionDate: string;
-    status: Status
+    assignDate: Date | null;
+    submissionDate: Date | null;
+    status: string
+    category: string
 };
 
 // declare type UpdateAppointmentParams = {

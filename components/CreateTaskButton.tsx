@@ -4,7 +4,7 @@ import { MdAddTask } from "react-icons/md";
 import React from 'react'
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import CreateTaskDialog from './CreateTaskDialog';
+import CreateTaskDialog from './form/CreateTaskDialog';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
@@ -24,13 +24,15 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { FileCheck2, List } from "lucide-react"
 import { createCategory } from '@/lib/actions/user.action';
-  
+import GetUseContext from '@/components/context/GetUseContext';
+import { addCategory, setCategory } from './context/GetContext';
 
 const CreateTaskButton: React.FC = () => {
 
     const [showDlg, setShowDlg] = useState(false)
     const [showDrp, setShowDrp] = useState(false)
     const [ isLoading, setIsLoading ] = useState(false)
+    const { dispatch } = GetUseContext()
 
     const title = useRef("")
     
@@ -45,7 +47,7 @@ const CreateTaskButton: React.FC = () => {
         console.log(values)
         try {
             const result = await createCategory(values)
-
+            dispatch(addCategory(result))
             console.log(result)
         } catch(error) {
             console.log(error)

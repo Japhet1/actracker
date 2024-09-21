@@ -36,8 +36,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Label } from "@/components/ui/label"
-import CreateTaskDialog from './CreateTaskDialog';
-import DeleteTask from './DeleteTask'
+import CreateTaskDialog from '../form/CreateTaskDialog';
+import DeleteTask from '../DeleteTask'
 
 
 
@@ -203,7 +203,7 @@ export const columns: ColumnDef<TableListProp>[] = [
                         <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-green-700'><MoveRight size={10} />Complete</span></DropdownMenuItem>
                     </DropdownMenuContent>
                     {showDlg && (<CreateTaskDialog title={title} showDlg={showDlg} toggleDlg={toggleShowDlg} />)}
-                    {deleteDlg && (<DeleteTask showDlg={deleteDlg} toggleDeleteDlg={toggleDeleteDlg} />)}
+                    {/* {deleteDlg && (<DeleteTask showDlg={deleteDlg} toggleDeleteDlg={toggleDeleteDlg} />)} */}
                 </DropdownMenu>
             )
         },

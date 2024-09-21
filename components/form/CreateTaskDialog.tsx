@@ -17,88 +17,126 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { Form } from "@/components/ui/form"
-import CustomFormField from "./form/CustomFormFields"
-import { FormFieldType } from "./form/CustomFormFields"
-import SubmitButton from "./form/SubmitButton"
+import CustomFormField from "./CustomFormFields"
+import { FormFieldType } from "./CustomFormFields"
+import SubmitButton from "./SubmitButton"
 import { useState } from "react"
 import { FormValidation } from "@/lib/validation"
-import { createUser } from "@/lib/actions/user.action"
+// import { createUser, updateTask } from "@/lib/actions/user.action"
 import { useRouter } from "next/navigation"
-import { SelectItem } from "./ui/select"
+import { SelectItem } from "../ui/select"
 import { taskCategories, teamMembers } from "@/constant"
+import { createTask, updateTask } from "@/lib/actions/user.action"
+import GetUseContext from '@/components/context/GetUseContext';
+import { addTask, editTask } from "../context/GetContext"
+import { parseStringify } from "@/lib/utils"
+import { CardListProp } from "../view/CardList"
 
 
 interface CreateTaskDialogProp {
     toggleDlg: () => void
     showDlg: boolean
     title: React.MutableRefObject<string>
+    editData?: React.MutableRefObject<CardListProp | undefined>
 }
 
-const CreateTaskDialog = ({toggleDlg, showDlg, title}:CreateTaskDialogProp) => {
+const CreateTaskDialog = ({toggleDlg, showDlg, title, editData}:CreateTaskDialogProp) => {
 
 
     const [ isLoading, setIsLoading ] = useState(false)
+    const { state, dispatch } = GetUseContext()
+
+    // console.log("document id", editData?.current?.id)
+    const users =  state.user.filter(item => item.name !== "Admin").map(item => item.name) 
+
 
      // 1. Define your form.
     const form = useForm<z.infer<typeof FormValidation>>({
         resolver: zodResolver(FormValidation),
         defaultValues: {
-            teamMember: "",
-            taskCategory: "",
-            createdAt: null,
-            expireAt: null,
-            description: ""
+            task: title.current !== "Edit task" ?   "" : editData?.current?.task ,
+            assignTo: title.current !== "Edit task" ?   "" : editData?.current?.assign ,
+            category: title.current !== "Edit task" ?   "" : editData?.current?.category ,
+            assignDate: title.current !== "Edit task" ?   null : editData?.current?.createdAt ,
+            submissionDate: title.current !== "Edit task" ?   null : editData?.current?.submissionDate ,
+            description: title.current !== "Edit task" ?   "" : editData?.current?.description ,
+            status: "" ,
+            userId:  "",
         },
     })
+
+    const userId = sessionStorage.getItem('userId');
  
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof FormValidation>) {
         // setIsLoading(true)
-        console.log(values)
-        // try {
-        //     const user = {
-        //         username: values.username,
-        //         email: values.email,
-        //         password: values.password,
-        //     };
-        //     const newUser = await createUser(user);
-        //     if (newUser) {
-        //       router.push(`/users/${newUser.$id}/register`);
-        //     }
-        // } catch (error) {
-        //     console.log(error);
-        // }
-        // setIsLoading(false);
+
+       
+        
+        try {
+            if (title.current == "Edit task") {
+                // const result = await updateTask( editData?.current?.id, )
+                const data = {
+                    $id: editData?.current?.id,
+                    task: values.task,
+                    assignTo: values.assignTo,
+                    category: values.category,
+                    assignDate: values.assignDate,
+                    submissionDate: values.submissionDate,
+                    description: values.description,
+                    status: "pending",
+                    userId: userId
+                };
+                const result = await updateTask(data.$id!, data)
+                dispatch(editTask(result))
+                // console.log(values)
+            } else {
+                const data = {
+                    task: values.task,
+                    assignTo: values.assignTo,
+                    category: values.category,
+                    assignDate: values.assignDate,
+                    submissionDate: values.submissionDate,
+                    description: values.description,
+                    status: "pending",
+                    userId: userId
+                };
+                // console.log(data)
+                const result = await createTask(data)
+                dispatch(addTask(result))
+                // console.log(result)
+            }
+            
+        } catch(error) {
+            console.log(error)
+        }
+        form.reset()
         toggleDlg()
     }
 
     return (
         <Dialog open={showDlg} onOpenChange={toggleDlg}>
-            {/* <DialogTrigger asChild>
-                <Button className='text-white bg-gray-800 space-x-2'>
-                    <MdAddTask/>
-                    <h1>New Task</h1>
-                </Button>
-            </DialogTrigger> */}
             <DialogContent className="sm:max-w-[600px] bg-white">
                 <DialogHeader>
                     <DialogTitle>{title.current}</DialogTitle>
-                    {/* <DialogDescription>
-                        Make changes to your profile here. Click save when you're done.
-                    </DialogDescription> */}
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
+                        <CustomFormField 
+                            control={form.control} 
+                            fieldType={FormFieldType.INPUT}
+                            name="task"
+                            placeholder="Task"
+                        />
                         <div className="flex flex-col gap-6 xl:flex-row">
                             <CustomFormField 
                                 control={form.control} 
                                 fieldType={FormFieldType.SELECT}
-                                name="teamMember"
-                                // label="Team Member"
+                                name="assignTo"
                                 placeholder="Select a team member"
                             >
-                                {teamMembers.map((type) => (
+                                {users.map((type) => (
                                     <SelectItem key={type} value={type}>
                                         {type}
                                     </SelectItem>
@@ -107,13 +145,12 @@ const CreateTaskDialog = ({toggleDlg, showDlg, title}:CreateTaskDialogProp) => {
                             <CustomFormField 
                                 control={form.control} 
                                 fieldType={FormFieldType.SELECT}
-                                name="taskCategory"
-                                // label="Category"
+                                name="category"
                                 placeholder="Select a task category"
                             >
-                                {taskCategories.map((type) => (
-                                    <SelectItem key={type} value={type}>
-                                        {type}
+                                {state.category.map((type) => (
+                                    <SelectItem key={type.$id} value={type.category}>
+                                        {type.category}
                                     </SelectItem>
                                 ))}
                             </CustomFormField>
@@ -122,16 +159,14 @@ const CreateTaskDialog = ({toggleDlg, showDlg, title}:CreateTaskDialogProp) => {
                             <CustomFormField 
                                 control={form.control} 
                                 fieldType={FormFieldType.DATE_PICKER}
-                                name="createdAt"
-                                // label="Assign Date"
+                                name="assignDate"
                                 iconSrc="/assets/icons/calendar-days.svg"
                                 iconAlt="calendar"
                             />
                             <CustomFormField 
                                 control={form.control} 
                                 fieldType={FormFieldType.DATE_PICKER}
-                                name="expireAt"
-                                // label="Submission Date"
+                                name="submissionDate"
                                 iconSrc="/assets/icons/calendar-days.svg"
                                 iconAlt="calendar"
                             />
@@ -140,17 +175,12 @@ const CreateTaskDialog = ({toggleDlg, showDlg, title}:CreateTaskDialogProp) => {
                             control={form.control} 
                             fieldType={FormFieldType.TEXTAREA}
                             name="description"
-                            // label="Description"
                             placeholder="description"
                         />
                         <SubmitButton isLoading={isLoading}>Save</SubmitButton>
                     </form>
                 </Form>
                 </div>
-                {/* <DialogFooter>
-                    <Button className="bg-light-200" type="submit">Save</Button>
-                    <Button className="bg-light-200" type="submit">Cancel</Button>
-                </DialogFooter> */}
             </DialogContent>
         </Dialog>
     )

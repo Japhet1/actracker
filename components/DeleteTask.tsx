@@ -10,14 +10,29 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
-
+import { deleteTask } from './context/GetContext'
+import GetUseContext from '@/components/context/GetUseContext';
+import { deleteTaskDocument } from '@/lib/actions/user.action';
 
 interface DeleteTaskProp {
     showDlg: boolean,
     toggleDeleteDlg: () => void
+    deleteId: React.MutableRefObject<string | undefined>
 }
 
-const DeleteTask = ({showDlg, toggleDeleteDlg}: DeleteTaskProp) => {
+const DeleteTask = ({showDlg, toggleDeleteDlg, deleteId}: DeleteTaskProp) => {
+    
+    const { dispatch } = GetUseContext()
+    const onDeleteTask = async () => {
+        try {
+            const result = await deleteTaskDocument(deleteId.current!)
+            console.log(result)
+            dispatch(deleteTask(deleteId.current))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    
     return (
         <AlertDialog open={showDlg} onOpenChange={toggleDeleteDlg}>
             <AlertDialogTrigger>Open</AlertDialogTrigger>
@@ -31,7 +46,7 @@ const DeleteTask = ({showDlg, toggleDeleteDlg}: DeleteTaskProp) => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Continue</AlertDialogAction>
+                    <AlertDialogAction onClick={onDeleteTask}>Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

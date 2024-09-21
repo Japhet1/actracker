@@ -13,44 +13,29 @@ import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 // import { getUser } from "@/lib/actions/user.action"
 import CreateTaskButton from '@/components/CreateTaskButton';
-import SideBar from '@/components/SideBar';
+import SideBar from '@/components/view/SideBar';
 // import { logoutUser } from '@/lib/actions/user.action';
 import { useRouter } from 'next/navigation';
 import { LayoutList } from "lucide-react"
-import { getCategory } from '@/lib/actions/user.action';
+import { getCategory, getTask } from '@/lib/actions/user.action';
+import { TaskContextProvider } from '@/components/context/GetContext';
+// import GetUseContext from '@/components/context/GetUseContext';
 
 
 const Page = ({params: { userId }}: SearchParamProps) => {
+
+    // const { state, dispatch } = GetUseContext()
     const { setTheme } = useTheme()
     // const user = await getUser(userId)
     console.log(userId)
 
-    const category = useRef<{ category: string; }[] | undefined>([]);
+    const useridref = useRef(userId);
 
     const sessionEmail = sessionStorage.getItem('sessionEmail');
-
-    useEffect(() => {
-        const fetchCategory = async () => {
-            try {
-                const response = await getCategory();
-                // category.current = response?.documents;
-                let result: string[] = []
-                const a = response?.documents.map(e => (
-                    // result.push(e.category)
-                    {category: e.category}
-                ))
-                category.current = a
-                console.log(category.current);
-            // console.log(a);
-                // console.log(response?.documents);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetchCategory();
-    }, []);
+    sessionStorage.setItem('userId', userId);
 
     return (
+        <TaskContextProvider>
         <main className="h-screen max-h-screen remove-scrollbar">
             
             <section className='container flex justify-between items-center py-4 '>
@@ -87,14 +72,16 @@ const Page = ({params: { userId }}: SearchParamProps) => {
                 </div>
             </section>
             
-            <section>
-                <CreateTaskButton />
-            </section>
+                <section>
+                    <CreateTaskButton />
+                </section>
 
-            <section>
-                <SideBar />
-            </section>
+                <section>
+                    <SideBar useridref={useridref.current}/>
+                </section>
+            
         </main>
+        </TaskContextProvider>
     )
 }
 

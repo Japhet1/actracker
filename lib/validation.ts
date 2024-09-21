@@ -21,9 +21,12 @@ export const CategoryValidation = z.object({
 });
 
 export const FormValidation = z.object({
-    teamMember: z.string(),
-    taskCategory: z.string(),
-    createdAt: z.date().nullable(),
-    expireAt: z.date().nullable(),
-    description: z.string()
+    task: z.string(),
+    assignTo: z.string(),
+    category: z.string(),
+    assignDate: z.date().nullable(),
+    submissionDate: z.date().nullable(),
+    description: z.string(),
+    status:z.string(),
+    userId: z.string(),
 });
