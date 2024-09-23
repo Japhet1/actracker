@@ -21,7 +21,7 @@ export const NEXT_PUBLIC_ENDPOINT="https://cloud.appwrite.io/v1"
 
 
 const client = new sdk.Client()
-client.setEndpoint(NEXT_PUBLIC_ENDPOINT!).setProject(PROJECT_ID!).setKey(API_KEY!)
+client.setEndpoint(NEXT_PUBLIC_ENDPOINT!).setProject(PROJECT_ID!).setKey(API_KEY!);
 
 
 export const database = new sdk.Databases(client)
@@ -32,6 +32,33 @@ export const users = new sdk.Users(client)
 export const account = new sdk.Account(client)
  
 // export const result = await account.deleteSessions();
+// export async function logouts() {
+//     const logoutAccount = new sdk.Account(client);
+//     const result = await logoutAccount.deleteSession("current");
+//     console.log(result);
+// }
+// export const logouts = async () => {
+//     try {
+//       await account.deleteSession('current');
+//       console.log('Logged out successfully');
+//       // Optionally redirect or update state here
+//     } catch (error) {
+//       console.error('Logout failed:', error);
+//     }
+//   };
+export async function logouts () {
+    try {
+      const session = await account.getSession('current');
+      await account.deleteSession(session.$id);
+      console.log('Logout successful');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Handle the error appropriately
+    }
+  }
+  
+  
+//   logout();
 
 // export const logoutUser = async (userId: string): Promise<void> => {
 //     try {

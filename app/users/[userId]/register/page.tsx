@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-// import { getUser } from "@/lib/actions/user.action"
+import { getUsers } from "@/lib/actions/user.action"
 import CreateTaskButton from '@/components/CreateTaskButton';
 import SideBar from '@/components/view/SideBar';
 // import { logoutUser } from '@/lib/actions/user.action';
@@ -20,19 +20,64 @@ import { LayoutList } from "lucide-react"
 import { getCategory, getTask } from '@/lib/actions/user.action';
 import { TaskContextProvider } from '@/components/context/GetContext';
 // import GetUseContext from '@/components/context/GetUseContext';
+import { account, logouts } from '@/lib/appwrite.config';
+import User from '@/components/User';
+
+
+
+
 
 
 const Page = ({params: { userId }}: SearchParamProps) => {
 
     // const { state, dispatch } = GetUseContext()
     const { setTheme } = useTheme()
-    // const user = await getUser(userId)
-    console.log(userId)
+
+    const router = useRouter()
 
     const useridref = useRef(userId);
 
     const sessionEmail = sessionStorage.getItem('sessionEmail');
-    sessionStorage.setItem('userId', userId);
+
+
+    const username = sessionStorage.getItem("username")
+    // console.log("username", username)
+    
+    // sessionStorage.setItem('userId', userId);
+
+    const logout = () => {
+        try {
+            // const sessionid = sessionStorage.getItem('userId');
+            // console.log(sessionid)
+    
+                // logouts()
+                router.push(`/`);
+
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    // const logout = async () => {
+    //     try {
+    //       // Retrieve the current sessions
+    //       const sessions = await account.listSessions();
+          
+    //       // Assuming you want to log out the first session (or handle multiple sessions as needed)
+    //       if (sessions.sessions.length > 0) {
+    //         const sessionId = sessions.sessions[0].id!; // or get the specific session ID you need
+    //         await account.deleteSession(sessionId);
+    //         console.log("User session deleted successfully");
+    //       } else {
+    //         console.log("No active sessions found for the user.");
+    //       }
+    //     } catch (error) {
+    //       console.error("Error deleting user session:", error);
+    //       throw error;
+    //     }
+    //   }
+      
 
     return (
         <TaskContextProvider>
@@ -44,10 +89,7 @@ const Page = ({params: { userId }}: SearchParamProps) => {
                     <a href='/'><h1 className="font-bold text-xl">ACTRACKER</h1></a>
                 </div>
                 <div className='flex items-center space-x-4'>
-                    <div className='flex items-center space-x-3'>
-                        {/* <h1>Welcome!</h1> */}
-                        <h1>{sessionEmail}</h1>
-                    </div>
+                    <User useriderf={userId}/>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="icon" className='dark:text-white'>
@@ -68,17 +110,18 @@ const Page = ({params: { userId }}: SearchParamProps) => {
                         </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <Button variant="outline" className='bg-white'>Logout</Button>
+                    <Button variant="outline" className='bg-white'onClick={logout}>Logout</Button>
                 </div>
             </section>
-            
+
                 <section>
                     <CreateTaskButton />
                 </section>
 
-                <section>
-                    <SideBar useridref={useridref.current}/>
-                </section>
+                
+            <section>
+                <SideBar useridref={useridref.current}/>
+            </section>
             
         </main>
         </TaskContextProvider>

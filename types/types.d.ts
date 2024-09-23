@@ -40,6 +40,7 @@ declare interface User extends CreateUserParams {
 // }
   
 declare type CreateTaskParams = {
+    $id?: string | undefined
     userId: string | null;
     task: string;
     description: string;
@@ -49,7 +50,15 @@ declare type CreateTaskParams = {
     status: string
     category: string
 };
-
+{ $id: string | undefined; 
+    task: string; 
+    assignTo: string; 
+    category: string | undefined; 
+    assignDate: Date | null; 
+    submissionDate: Date | null; 
+    description: string; 
+    status: string; 
+    userId: string | null; }
 // declare type UpdateAppointmentParams = {
 //     appointmentId: string;
 //     userId: string;

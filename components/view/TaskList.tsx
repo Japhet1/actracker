@@ -1,4 +1,4 @@
-import { useState, useEffect,useRef } from 'react'
+import { useState, useEffect,useRef, useCallback, useMemo } from 'react'
 import SearchCategory from '../SearchCategory'
 import { tasks } from '@/constant'
 import { Button } from "@/components/ui/button"
@@ -10,24 +10,32 @@ import { MdAdd } from 'react-icons/md'
 
 import CardList from './CardList'
 import TableList from './TableList'
-import { deleteCategoryDocument, getCategory, getTask, getUser } from '@/lib/actions/user.action';
+import { deleteCategoryDocument, getCategory, getTask, getUsers } from '@/lib/actions/user.action';
 import GetUseContext from '@/components/context/GetUseContext';
-import { deleteCategory, setCategory, setTask, setUser } from '../context/GetContext'
-
+import { deleteCategory, setCategory, setTask, setUser, setFilterTask } from '../context/GetContext'
+import { Models } from 'node-appwrite';
 
 interface TaskListProp {
     useridref: string
 }
 
+
 const TaskList = ({useridref}: TaskListProp) => {
 
     const [toggleTaskView, setToggleTaskView] = useState(true);
     const { state, dispatch } = GetUseContext()
-    // const [ filter, setFilter ] = useState<string>('')
+    const [ filter, setFilter ] = useState<string>('')
 
-    // const f = sessionStorage.getItem('userId');
-    // const userid = useRef(f)
-    // console.log(state.category)
+    const dd = useRef("")
+
+    const taskPerUser = sessionStorage.getItem("username")
+    const newData = state.task.filter(task => task.assignTo === taskPerUser)
+
+    if(taskPerUser == "Admin") {
+
+    }
+
+    // console.log("filter base on user", state.task)
     const onDeleteCategory = async (id: string | undefined) => {
         try {
             const result = await deleteCategoryDocument(id!)
@@ -37,80 +45,85 @@ const TaskList = ({useridref}: TaskListProp) => {
             console.log(error)
         }
     }
-    
-    
-
-    useEffect(() => {
-        const fetchCategory = async () => {
-            try {
-                const response = await getCategory();
-                dispatch(setCategory(response?.documents))
-                console.log("category", response);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        const fetchTask = async () => {
-            try {
-                const response = await getTask(useridref);
-                dispatch(setTask(response?.documents))
-                // console.log("task", response);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        const fetchUser = async() => {
-            try {
-                const response = await getUser()
-                dispatch(setUser(response?.users))
-                // console.log("users", response?.users)
-            } catch (error) {
-                console.log(error)
-            }
+   
+    const fetchFilterTask = useCallback(() => {
+        const filterByCategory: CreateTaskParams[] = state.task
+            .filter(e => e.category === filter)
+            .map(e => ({
+                $id: e.$id,
+                task: e.task,
+                assignTo: e.assignTo,
+                category: e.category,
+                assignDate: e.assignDate,
+                submissionDate: e.submissionDate,
+                description: e.description,
+                status: e.status,
+                userId: e.userId
+            }));
+            console.log(filterByCategory)
+        // Only dispatch if the filter result changes
+        if (JSON.stringify(filterByCategory)) {
+           dispatch(setFilterTask(filterByCategory));  // Dispatch only if there's a change
         }
-        fetchCategory();
-        fetchTask();
-        fetchUser()
-    }, []);
+    
+    }, [filter, state.task]);  // Ensure all relevant state variables are included in dependencies
+    // console.log(dd.current)
+    useEffect(() => {
+        // console.log(fetchFilterTask())
+        fetchFilterTask();
+    }, [filter]);
 
-    // useEffect(() => {
-    //     dispatch(setCategory(filter))
-    // }, [filter, dispatch])
+    // const filterByCategory = () => {
+    //     if (filter === '') {
+    //       return state.task;
+    //     } else {
+    //       return state.task.filter(e => e.category === filter).map(e => ({
+    //         $id: e.$id,
+    //         task: e.task,
+    //         assignTo: e.assignTo,
+    //         category: e.category,
+    //         assignDate: e.assignDate,
+    //         submissionDate: e.submissionDate,
+    //         description: e.description,
+    //         status: e.status,
+    //         userId: e.userId
+    //       }));
+    //     }
+    //   }
+    //   console.log(filterByCategory)
+    //   useEffect(() => {
+    //     dispatch(setFilterTask(filterByCategory));
+    //   }, [filterByCategory, dispatch]);
 
 
     
     return (
         <div className='space-y-5 remove-scrollbar'>
             <section className='flex justify-between items-center border-dashed'>
-                {/* <SearchCategory /> */}
                 <div className='flex items-center space-x-5'>
                     <div>
-                        <button className='text-sm'>
-                            All
-                        </button>
+                        <button className='text-sm' onClick={() => setFilter('')}>All</button>
                     </div>
-                    {/* <h1>{category}</h1> */}
                     {state.category.map((category) => (
                         <div key={category.$id} className="flex justify-between items-center rounded-md space-x-2 text-black group px-2 py-1 hover:text-green-500">
                             <button
                                 onClick={(e) => {
-                                e.preventDefault();
-                                // setFilter(category.category);
+                                    e.preventDefault();
+                                    setFilter(category.category)
+                                    
                                 }}
                                 className="flex-grow text-left text-sm"
                             >
                                 {category.category}
                             </button>
-                            {/* <div className=""> */}
-                                <X 
-                                    size={15}
-                                    className="text-dark-400 text-base cursor-pointer"
-                                    onClick={(event) => {
-                                        event.stopPropagation();
-                                        onDeleteCategory(category.$id);
-                                    }}
-                                />
-                            {/* </div> */}
+                            <X 
+                                size={15}
+                                className="text-dark-400 text-base cursor-pointer"
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    onDeleteCategory(category.$id);
+                                }}
+                            />
                         </div>
                     ))}
                 </div>
@@ -122,9 +135,21 @@ const TaskList = ({useridref}: TaskListProp) => {
 
             {toggleTaskView ? (
                 <section className='grid grid-cols-12 gap-5 remove-scrollbar'>
-                    {state.task.map(task => (
+                    {taskPerUser == "Admin" ? state.task.map(task => (
                         <CardList 
-                            // key = {task.id}
+                            key={task.$id}
+                            id = {task.$id}
+                            task = {task.task}
+                            description = {task.description}
+                            assign = {task.assignTo}
+                            createdAt = {task.assignDate}
+                            submissionDate = {task.submissionDate}
+                            status = {task.status}
+                            category = {task.category}
+                        />
+                    )): newData.map(task => (
+                        <CardList 
+                            key={task.$id}
                             id = {task.$id}
                             task = {task.task}
                             description = {task.description}

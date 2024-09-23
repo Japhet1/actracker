@@ -1,7 +1,8 @@
 import { Value } from "@radix-ui/react-select"
 import { Children, createContext, ReactNode, useReducer } from "react"
 import { Models } from 'node-appwrite';
-
+import { useEffect } from "react";
+import { deleteCategoryDocument, getCategory, getTask, getUsers } from '@/lib/actions/user.action';
 
 const SET_CATEGORY = "SET_CATEGORY"
 const ADD_CATEGORY = "ADD_CATEGORY"
@@ -19,7 +20,7 @@ interface Category {
 }
 
 interface Task {
-    $id?:string
+    $id: string | undefined
     userId: string | null;
     task: string;
     description: string;
@@ -46,10 +47,13 @@ interface AppContextProp {
     dispatch: React.Dispatch<Action>
 }
 
+// USER ACTION
 export const setUser = (users: Models.User<Models.Preferences>[] | undefined): Action => ({
     type: SET_USERS,
     payload: users
 })
+
+// CATEGORY ACTION
 export const setCategory = (categories: Models.Document[] | undefined): Action => ({
     type: SET_CATEGORY,
     payload: categories
@@ -67,6 +71,11 @@ export const deleteCategory = (categoryId: string | undefined) => ({
     payload: categoryId
 })
 
+// TASK ACTION
+export const setFilterTask = (task: CreateTaskParams[]): Action => ({
+    type: SET_TASK,
+    payload: task
+})
 export const setTask = (task: Models.Document[] | undefined): Action => ({
     type: SET_TASK,
     payload: task
@@ -122,6 +131,69 @@ interface AppProviderProps {
   
   export const TaskContextProvider = ({ children }: AppProviderProps) => {
     const [state, dispatch] = useReducer(contextReducer, initialState);
+
+    const useridref = sessionStorage.getItem('userId');
+
+    useEffect(() => {
+        const fetchCategory = async () => {
+            try {
+                const response = await getCategory();
+                dispatch(setCategory(response?.documents))
+                // console.log("category", response);
+                
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        const fetchTask = async () => {
+            try {
+                const response = await getTask();
+                dispatch(setTask(response?.documents))
+                //  console.log("task", response);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        const fetchUser = async() => {
+            try {
+                const response = await getUsers()
+                dispatch(setUser(response?.users))
+                // console.log("users", response?.users)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        // const fetchUserDetail = async() => {
+        //     try {
+        //         const response = await getUserDetail()
+        //         // dispatch(setUser(response?.users))
+        //         console.log("users", response)
+        //     } catch (error) {
+        //         console.log(error)
+        //     }
+        // }
+        // const fetchFilterTask = (category: string) => {
+        //     const filterByCategory: CreateTaskParams[] = state.task.filter(e => e.category == category).map(e => ({
+        //         $id: e.$id,
+        //         task: e.task,
+        //         assignTo: e.assignTo,
+        //         category: e.category,
+        //         assignDate: e.assignDate,
+        //         submissionDate: e.submissionDate,
+        //         description: e.description,
+        //         status: e.status,
+        //         userId: e.userId
+        //     }))
+            
+        //     dispatch(setFilterTask(filterByCategory))
+        // }
+        fetchCategory();
+        fetchTask();
+        fetchUser()
+        // fetchUserDetail()
+
+        
+    }, []);
   
     return (
         <TaskContext.Provider value={{ state, dispatch }}>

@@ -34,6 +34,8 @@ const CreateTaskButton: React.FC = () => {
     const [ isLoading, setIsLoading ] = useState(false)
     const { dispatch } = GetUseContext()
 
+    const username = sessionStorage.getItem("username")
+
     const title = useRef("")
     
     const form = useForm<z.infer<typeof CategoryValidation>>({
@@ -66,49 +68,54 @@ const CreateTaskButton: React.FC = () => {
 
 
     return (
+        
         <main className='container'>
-            <div className='flex justify-center items-center space-x-4 rounded-md'>
-                <div>
-                    <Button variant="outline" className='bg-white space-x-2'
-                        onClick={toggleDialog}
-                    >
-                        <FileCheck2 size={15}/>
-                        <h1>New Task</h1>
-                    </Button>
-                </div>
-                <div>
-                    <DropdownMenu open={showDrp} onOpenChange={setShowDrp}>
-                        <DropdownMenuTrigger asChild className="bg-light-200 p-2 cursor-pointer">
-                            <Button variant="outline" className="space-x-2 bg-white">
-                                <span className="sr-only">Open menu</span>
-                                <List size={15}/>
-                                <h1>New Category</h1>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent 
-                            align="end" 
-                            className="bg-white w-[280px] p-2"
+            {username == "Admin" as string && 
+                <div className='flex justify-center items-center space-x-4 rounded-md'>
+                    <div>
+                        <Button variant="outline" className='bg-white space-x-2'
+                            onClick={toggleDialog}
                         >
-                            <DropdownMenuSeparator />
-                                <Form {...form} >
-                                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 flex-1">
-                                        <div >
-                                            <CustomFormField 
-                                                control={form.control} 
-                                                fieldType={FormFieldType.CATEGORYINPUT}
-                                                name="category"
-                                                placeholder="Add new category"
-                                            />
-                                        </div>
-                                        <SubmitButton isLoading={isLoading} click={toggleDropdown}>Add</SubmitButton>
-                                    </form>
-                                </Form>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                            <FileCheck2 size={15}/>
+                            <h1>New Task</h1>
+                        </Button>
+                    </div>
+                    <div>
+                        <DropdownMenu open={showDrp} onOpenChange={setShowDrp}>
+                            <DropdownMenuTrigger asChild className="bg-light-200 p-2 cursor-pointer">
+                                <Button variant="outline" className="space-x-2 bg-white">
+                                    <span className="sr-only">Open menu</span>
+                                    <List size={15}/>
+                                    <h1>New Category</h1>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent 
+                                align="end" 
+                                className="bg-white w-[280px] p-2"
+                            >
+                                <DropdownMenuSeparator />
+                                    <Form {...form} >
+                                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 flex-1">
+                                            <div >
+                                                <CustomFormField 
+                                                    control={form.control} 
+                                                    fieldType={FormFieldType.CATEGORYINPUT}
+                                                    name="category"
+                                                    placeholder="Add new category"
+                                                />
+                                            </div>
+                                            <SubmitButton isLoading={isLoading} click={toggleDropdown}>Add</SubmitButton>
+                                        </form>
+                                    </Form>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                    {showDlg && (<CreateTaskDialog title={title} showDlg={showDlg} toggleDlg={toggleDialog} />)}
                 </div>
-            </div>
-            {showDlg && (<CreateTaskDialog title={title} showDlg={showDlg} toggleDlg={toggleDialog} />)}
+               
+            }
         </main>
+        
     )
 }
 

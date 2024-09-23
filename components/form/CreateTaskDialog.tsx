@@ -70,9 +70,6 @@ const CreateTaskDialog = ({toggleDlg, showDlg, title, editData}:CreateTaskDialog
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof FormValidation>) {
         // setIsLoading(true)
-
-       
-        
         try {
             if (title.current == "Edit task") {
                 // const result = await updateTask( editData?.current?.id, )
@@ -84,7 +81,7 @@ const CreateTaskDialog = ({toggleDlg, showDlg, title, editData}:CreateTaskDialog
                     assignDate: values.assignDate,
                     submissionDate: values.submissionDate,
                     description: values.description,
-                    status: "pending",
+                    status: "Pending",
                     userId: userId
                 };
                 const result = await updateTask(data.$id!, data)
@@ -98,11 +95,12 @@ const CreateTaskDialog = ({toggleDlg, showDlg, title, editData}:CreateTaskDialog
                     assignDate: values.assignDate,
                     submissionDate: values.submissionDate,
                     description: values.description,
-                    status: "pending",
+                    status: "Pending",
                     userId: userId
                 };
                 // console.log(data)
                 const result = await createTask(data)
+                console.log(result)
                 dispatch(addTask(result))
                 // console.log(result)
             }

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
     ContextMenu,
     ContextMenuCheckboxItem,
@@ -32,27 +32,48 @@ import {
   } from "@/components/ui/dropdown-menu"
 import { Button } from '../ui/button'
 import GetUseContext from '@/components/context/GetUseContext';
+import { updateTask } from '@/lib/actions/user.action'
+import { editTask } from '../context/GetContext'
+import { format, parseISO } from 'date-fns';
 
 export interface CardListProp {
     // key: string | undefined,
-    id: string | undefined,
+    id?: string | undefined,
     task: string,
     description: string,
     assign: string,
     createdAt: Date | null,
     submissionDate: Date | null,
-    status: string | undefined,
-    category: string | undefined
+    status: string,
+    category: string 
 }
 
 const CardList = ({id, task, description, assign, createdAt, submissionDate, status, category}: CardListProp) => {
 
     const [showDlg, setShowDlg] = useState(false)
     const [deleteDlg, setDeleteDlg] = useState(false)
-    const { state } = GetUseContext()
+    const { state, dispatch } = GetUseContext()
     const title = useRef("")
     const editData = useRef<CardListProp>()
     const taskId = useRef<string | undefined>("")
+    // const statusRef = useRef("")
+    const [statusRef, steStatusRef] = useState<string>("")
+
+
+    const userId = sessionStorage.getItem('userId');
+    // const updateStatus = () => {
+
+    // }
+
+    // console.log(state.task)
+
+    const createdAtDateString: Date | null = createdAt; // Example date
+    const submissionDateString: Date | null = submissionDate; 
+
+    const formattedCreatedAt = createdAtDateString ? format(createdAtDateString, 'MMMM d, yyyy') : 'No date available';
+    const formattedSubmissionDate = submissionDateString ? format(submissionDateString, 'MMMM d, yyyy') : 'No date available';
+
+    const taskPerUser = sessionStorage.getItem("username")
     
     const toggleShowDlg = () => {
         title.current = "Edit task"
@@ -73,6 +94,34 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
         setDeleteDlg(!deleteDlg);
     }
 
+    // useEffect(() => {
+        const updateTaskStatus = async ( statusref: string) => {
+            try {
+                const data = {
+                    $id: id,
+                    task: task,
+                    assignTo: assign,
+                    category: category,
+                    assignDate: createdAt,
+                    submissionDate: submissionDate,
+                    description: description,
+                    status: statusref,
+                    userId: userId
+                };
+            const result = await updateTask(data.$id!, data)
+            console.log(result)
+            dispatch(editTask(result))
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        // updateTaskStatus()
+    // }, [])
+
+    
+
+    
+
     return (
         <div className="w-[400px] col-span-4 border bg-white rounded-lg" key={id}>
                     <CardHeader >
@@ -83,7 +132,15 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
                                 <Label className='text-lg font-bold'>{category}</Label>
                             </div>
                             <div>
-                                <Label>{status}</Label>
+                                <Label 
+                                    className={
+                                        status === "Pending"? 'text-red-500 font-semibold' : 
+                                        status === "In Progress"? 'text-orange-500 font-semibold': 
+                                        status === "Complete"? 'text-green-500 font-semibold': ""
+                                    }
+                                >
+                                    {status}
+                                </Label>
                             </div>
                             <div className='flex gap-3'>
                                 {/* <span className='bg-light-200 p-2 cursor-pointer' onClick={toggleShowDlg}><Pencil size={15} /></span> */}
@@ -122,24 +179,35 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="bg-white w-40">
-                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                        <DropdownMenuItem>
-                                            <div className='flex items-center space-x-3 text-dark-600'>
-                                                <Pencil size={15} />
-                                                <Label className='cursor-pointer' onClick={toggleShowDlg}>Edit</Label>
-                                            </div>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <div className='flex items-center space-x-3 text-dark-600'>
-                                                <Trash2 size={15} />
-                                                <Label className='cursor-pointer' onClick={toggleDeleteDlg}>Delete</Label>
-                                            </div>
-                                        </DropdownMenuItem>
+                                        
+                                        {taskPerUser == "Admin" && (
+                                            <>
+                                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                <DropdownMenuItem>
+                                                <div className='flex items-center space-x-3 text-dark-600'>
+                                                    <Pencil size={15} />
+                                                    <Label className='cursor-pointer' onClick={toggleShowDlg}>Edit</Label>
+                                                </div>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem>
+                                                    <div className='flex items-center space-x-3 text-dark-600'>
+                                                        <Trash2 size={15} />
+                                                        <Label className='cursor-pointer' onClick={toggleDeleteDlg}>Delete</Label>
+                                                    </div>
+                                                </DropdownMenuItem>
+                                            </>
+                                        )}
+                                        
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuLabel>Status Update</DropdownMenuLabel>
-                                        <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-red-700'><MoveRight size={10} />Pending</span></DropdownMenuItem>
-                                        <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-orange-700'><MoveRight size={10} />In Progress</span></DropdownMenuItem>
-                                        <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-green-700'><MoveRight size={10} />Complete</span></DropdownMenuItem>
+                                        {taskPerUser !== "Admin" && (
+                                            <>
+                                                <DropdownMenuLabel>Status Update</DropdownMenuLabel>
+                                                <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-red-500' onClick={async () => await updateTaskStatus("Pending")}><MoveRight size={10} />Pending</span></DropdownMenuItem>
+                                                <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-orange-500' onClick={async () => await updateTaskStatus("In Progress")}><MoveRight size={10} />In Progress</span></DropdownMenuItem>
+                                                <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-green-500' onClick={async () => await updateTaskStatus("Complete") }><MoveRight size={10} />Complete</span></DropdownMenuItem>
+                                            </>
+                                        )}
+                                        
                                     </DropdownMenuContent>
                                     {showDlg && (<CreateTaskDialog title={title} editData={editData} showDlg={showDlg} toggleDlg={toggleShowDlg} />)}
                                     {deleteDlg && (<DeleteTask showDlg={deleteDlg} deleteId={taskId} toggleDeleteDlg={toggleDeleteDlg} />)}
@@ -161,14 +229,14 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
                             <p className='text-dark-700 text-sm'>{assign}</p>
                         </div>
                         <div className='flex items-center justify-between'>
-                            {/* <div className='text-sm'>
+                            <div className='text-sm'>
                                 <Label className=''>Assigned Date</Label>
-                                <p className='text-dark-700'>{createdAt ? createdAt.toLocaleDateString() : 'No Assigned Date'}</p>
+                                <p className='text-dark-700'>{formattedCreatedAt}</p>
                             </div>
                             <div className='text-sm'>
                                 <Label className=''>Submission Date</Label>
-                                <p className='text-dark-700'>{submissionDate ? submissionDate.toLocaleDateString() : 'No Submission Date'}</p>
-                            </div> */}
+                                <p className='text-dark-700'>{formattedSubmissionDate}</p>
+                            </div>
                         </div>
 
                     </CardContent>

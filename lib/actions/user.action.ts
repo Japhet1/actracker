@@ -23,7 +23,22 @@ export const createUser = async (user: CreateUserParams) => {
     }
 };
 
-export const getUser = async () => {
+export const createUserAccount = async (user: CreateUserParams) => {
+  try {
+      const newuser = await account.create(
+          ID.unique(),
+          user.email,
+          user.password,
+          user.username
+      );
+      console.log(newuser)
+      return parseStringify(newuser);
+  } catch (error: any) {
+      console.error("An error occurred while creating a new user:", error);
+  }
+};
+
+export const getUsers = async () => {
     try {
         const user = await users.list()
         // console.log(user)
@@ -34,26 +49,45 @@ export const getUser = async () => {
 }
 
 
+
+
+
 export const loginUser = async (email: string, password: string) => {
     try {
         const session = await account.createEmailPasswordSession(email, password);
-        // console.log(session)
+        console.log('Session created:', session);
+
+        const sessionToken = session.secret; // Get session token
+  
+        // Set the token in cookies (optional)
+        document.cookie = `appwriteSession=${sessionToken}; path=/;`;
         return parseStringify(session);
     } catch (error) {
         console.error('Login error:', error);
     }
 }
 
+export const getUserDetail = async() => {
+  try {
+      const user = await account.get();
+      // console.log('User details:', user);
+      // console.log(session)
+      return parseStringify(user);
+  } catch (error) {
+      console.error('Login error:', error);
+  }
+}
+
 // const sessionId = localStorage.getItem('sessionId');
 // console.log(sessionId);
 
 
-// export const logoutUser = async (userId: string) => {
+// export const logoutUser = async () => {
 //     try {
   
-//       const result = await account.deleteSession(userId);
+//       await account.deleteSession("current");
 //       console.log("User session deleted successfully");
-//       return parseStringify(result);
+//       // return parseStringify(result);
 //     } catch (error) {
 //       console.error("Error deleting user session:", error);
 //       throw error;
@@ -116,12 +150,12 @@ export const getCategory = async () => {
     }
 };
 
-export const getTask = async (userId: string) => {
+export const getTask = async () => {
     try {
       const response = await database.listDocuments(
         DATABASE_ID!,
         TASK_COLLECTION_ID!,
-        [Query.equal("userId", [userId])]
+        // [Query.equal("userId", [userId])]
       );
       return parseStringify(response);
     } catch (error) {
