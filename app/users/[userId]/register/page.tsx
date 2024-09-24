@@ -47,7 +47,10 @@ const Page = ({params: { userId }}: SearchParamProps) => {
 
     const logout = () => {
         try {
-            // const sessionid = sessionStorage.getItem('userId');
+            sessionStorage.removeItem('sessionEmail');
+            sessionStorage.removeItem('sessionId');
+            sessionStorage.removeItem('username');
+            document.cookie = "appwriteSession=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
             // console.log(sessionid)
     
                 // logouts()
@@ -114,9 +117,9 @@ const Page = ({params: { userId }}: SearchParamProps) => {
                 </div>
             </section>
 
-                <section>
-                    <CreateTaskButton />
-                </section>
+            <section className='mb-5 py-10'>
+                <CreateTaskButton />
+            </section>
 
                 
             <section>

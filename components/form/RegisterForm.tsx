@@ -79,7 +79,7 @@ const RegisterForm = () => {
                 // const data = await getUserDetail()
                 console.log(userAccount)
                 // console.log(data)
-                if (login) {
+                if (userAccount) {
                     // sessionStorage.setItem('sessionId', login.$id);
                     // sessionStorage.setItem('sessionEmail', login.providerUid);
                     
@@ -112,7 +112,7 @@ const RegisterForm = () => {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
-                {login && (
+                {auth && (
                     <CustomFormField 
                         control={form.control} 
                         fieldType={FormFieldType.INPUT}
@@ -139,10 +139,10 @@ const RegisterForm = () => {
                     label="Password"
                     placeholder="********"
                 />
-                <SubmitButton isLoading={isLoading}>{login ? "Register" : "Login"}</SubmitButton>
+                <SubmitButton isLoading={isLoading}>{auth ? "Register" : "Login"}</SubmitButton>
             </form>
             <section className='flex-1 flex-row items-center py-5'>
-                <h1 >Already have an account? <button className="font-bold" onClick={loginAuth}>{login ? "Login" : "Register"}</button></h1>
+                <h1 >Already have an account? <button className="font-bold" onClick={loginAuth}>{auth ? "Login" : "Register"}</button></h1>
             </section>
         </Form>
     )
