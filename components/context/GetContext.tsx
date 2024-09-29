@@ -132,8 +132,6 @@ interface AppProviderProps {
   export const TaskContextProvider = ({ children }: AppProviderProps) => {
     const [state, dispatch] = useReducer(contextReducer, initialState);
 
-    const useridref = sessionStorage.getItem('userId');
-
     useEffect(() => {
         const fetchCategory = async () => {
             try {

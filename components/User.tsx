@@ -21,7 +21,7 @@ const User = ({useriderf}: UserProp) => {
     return (
         <div className='flex items-center space-x-3'>
             <h1>Welcome!</h1>
-            <h1>{userObject.name}</h1>
+            <strong>{userObject.name}</strong>
         </div>
     )
 }

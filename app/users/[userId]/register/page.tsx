@@ -37,50 +37,19 @@ const Page = ({params: { userId }}: SearchParamProps) => {
 
     const useridref = useRef(userId);
 
-    const sessionEmail = sessionStorage.getItem('sessionEmail');
-
-
-    const username = sessionStorage.getItem("username")
-    // console.log("username", username)
-    
-    // sessionStorage.setItem('userId', userId);
-
     const logout = () => {
         try {
             sessionStorage.removeItem('sessionEmail');
             sessionStorage.removeItem('sessionId');
             sessionStorage.removeItem('username');
             document.cookie = "appwriteSession=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-            // console.log(sessionid)
-    
-                // logouts()
-                router.push(`/`);
 
+            router.push(`/`);
 
         } catch (error) {
             console.log(error)
         }
     }
-
-    // const logout = async () => {
-    //     try {
-    //       // Retrieve the current sessions
-    //       const sessions = await account.listSessions();
-          
-    //       // Assuming you want to log out the first session (or handle multiple sessions as needed)
-    //       if (sessions.sessions.length > 0) {
-    //         const sessionId = sessions.sessions[0].id!; // or get the specific session ID you need
-    //         await account.deleteSession(sessionId);
-    //         console.log("User session deleted successfully");
-    //       } else {
-    //         console.log("No active sessions found for the user.");
-    //       }
-    //     } catch (error) {
-    //       console.error("Error deleting user session:", error);
-    //       throw error;
-    //     }
-    //   }
-      
 
     return (
         <TaskContextProvider>
