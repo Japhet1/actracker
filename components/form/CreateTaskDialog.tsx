@@ -1,17 +1,11 @@
 "use client"
-import { Button } from "@/components/ui/button"
+
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { MdAddTask } from "react-icons/md";
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -20,16 +14,13 @@ import { Form } from "@/components/ui/form"
 import CustomFormField from "./CustomFormFields"
 import { FormFieldType } from "./CustomFormFields"
 import SubmitButton from "./SubmitButton"
-import { useState } from "react"
+// import { useState } from "react"
 import { FormValidation } from "@/lib/validation"
 // import { createUser, updateTask } from "@/lib/actions/user.action"
-import { useRouter } from "next/navigation"
 import { SelectItem } from "../ui/select"
-import { taskCategories, teamMembers } from "@/constant"
 import { createTask, updateTask } from "@/lib/actions/user.action"
 import GetUseContext from '@/components/context/GetUseContext';
 import { addTask, editTask } from "../context/GetContext"
-import { parseStringify } from "@/lib/utils"
 import { CardListProp } from "../view/CardList"
 
 
@@ -43,7 +34,7 @@ interface CreateTaskDialogProp {
 const CreateTaskDialog = ({toggleDlg, showDlg, title, editData}:CreateTaskDialogProp) => {
 
 
-    const [ isLoading, setIsLoading ] = useState(false)
+    // const [ isLoading, setIsLoading ] = useState(false)
     const { state, dispatch } = GetUseContext()
 
     // console.log("document id", editData?.current?.id)
@@ -114,7 +105,7 @@ const CreateTaskDialog = ({toggleDlg, showDlg, title, editData}:CreateTaskDialog
 
     return (
         <Dialog open={showDlg} onOpenChange={toggleDlg}>
-            <DialogContent className="sm:max-w-[600px] bg-white">
+            <DialogContent className="sm:max-w-[600px] bg-white dark:bg-dark-400 dark:border-none">
                 <DialogHeader>
                     <DialogTitle>{title.current}</DialogTitle>
                 </DialogHeader>
@@ -175,7 +166,7 @@ const CreateTaskDialog = ({toggleDlg, showDlg, title, editData}:CreateTaskDialog
                             name="description"
                             placeholder="description"
                         />
-                        <SubmitButton isLoading={isLoading}>Save</SubmitButton>
+                        <SubmitButton >Save</SubmitButton>
                     </form>
                 </Form>
                 </div>

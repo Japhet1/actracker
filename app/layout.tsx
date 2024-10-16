@@ -20,7 +20,7 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
     return (
         <html lang="en" suppressHydrationWarning>
             <body
-                className={cn('min-h-screen bg-light-200 font-sans antialiased', fontSans.variable)}
+                className={cn('min-h-screen bg-light-200 dark:bg-dark-200 font-sans antialiased', fontSans.variable)}
                 suppressHydrationWarning={true}
             >
                 <ThemeProvider

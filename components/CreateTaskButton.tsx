@@ -1,9 +1,7 @@
 import { useRef, useState } from 'react'
 // import { MdNoteAdd } from 'react-icons/md'
-import { MdAddTask } from "react-icons/md";
 import React from 'react'
 import { Button } from './ui/button';
-import { Input } from './ui/input';
 import CreateTaskDialog from './form/CreateTaskDialog';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -15,23 +13,20 @@ import { FormFieldType } from "./form/CustomFormFields"
 import SubmitButton from "./form/SubmitButton"
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
 import { FileCheck2, List } from "lucide-react"
 import { createCategory } from '@/lib/actions/user.action';
 import GetUseContext from '@/components/context/GetUseContext';
-import { addCategory, setCategory } from './context/GetContext';
+import { addCategory } from './context/GetContext';
 
 const CreateTaskButton: React.FC = () => {
 
     const [showDlg, setShowDlg] = useState(false)
     const [showDrp, setShowDrp] = useState(false)
-    const [ isLoading, setIsLoading ] = useState(false)
+    // const [ isLoading, setIsLoading ] = useState(false)
     const { dispatch } = GetUseContext()
 
     const username = sessionStorage.getItem("username")
@@ -73,7 +68,7 @@ const CreateTaskButton: React.FC = () => {
             {username == "Admin" as string && 
                 <div className='flex justify-center items-center space-x-4 rounded-md'>
                     <div>
-                        <Button variant="outline" className='bg-white space-x-2'
+                        <Button variant="outline" className='bg-white dark:bg-dark-200 dark:border-dark-500 space-x-2'
                             onClick={toggleDialog}
                         >
                             <FileCheck2 size={15}/>
@@ -82,7 +77,7 @@ const CreateTaskButton: React.FC = () => {
                     </div>
                     <div>
                         <DropdownMenu open={showDrp} onOpenChange={setShowDrp}>
-                            <DropdownMenuTrigger asChild className="bg-light-200 p-2 cursor-pointer">
+                            <DropdownMenuTrigger asChild className="bg-light-200 dark:bg-dark-200 dark:border-dark-500 p-2 cursor-pointer">
                                 <Button variant="outline" className="space-x-2 bg-white">
                                     <span className="sr-only">Open menu</span>
                                     <List size={15}/>
@@ -91,7 +86,7 @@ const CreateTaskButton: React.FC = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent 
                                 align="end" 
-                                className="bg-white w-[280px] p-2"
+                                className="bg-white dark:bg-dark-200 dark:border-dark-500 w-[280px] p-2"
                             >
                                 <DropdownMenuSeparator />
                                     <Form {...form} >
@@ -104,7 +99,7 @@ const CreateTaskButton: React.FC = () => {
                                                     placeholder="Add new category"
                                                 />
                                             </div>
-                                            <SubmitButton isLoading={isLoading} click={toggleDropdown}>Add</SubmitButton>
+                                            <SubmitButton click={toggleDropdown}>Add</SubmitButton>
                                         </form>
                                     </Form>
                             </DropdownMenuContent>

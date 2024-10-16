@@ -36,7 +36,7 @@ const DeleteTask = ({showDlg, toggleDeleteDlg, deleteId}: DeleteTaskProp) => {
     return (
         <AlertDialog open={showDlg} onOpenChange={toggleDeleteDlg}>
             <AlertDialogTrigger>Open</AlertDialogTrigger>
-            <AlertDialogContent className='bg-white'>
+            <AlertDialogContent className='bg-white dark:bg-dark-400 dark:border-none'>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                     <AlertDialogDescription>
@@ -46,7 +46,7 @@ const DeleteTask = ({showDlg, toggleDeleteDlg, deleteId}: DeleteTaskProp) => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={onDeleteTask}>Continue</AlertDialogAction>
+                    <AlertDialogAction onClick={onDeleteTask}>Delete</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useState } from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,7 +13,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Pencil, Trash2, MoveRight, MoveLeft } from "lucide-react"
+import { ChevronDown, MoveRight, MoveLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -21,12 +21,9 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+// import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -35,9 +32,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Label } from "@/components/ui/label"
-import CreateTaskDialog from '../form/CreateTaskDialog';
-import DeleteTask from '../DeleteTask'
+
+// import DeleteTask from '../DeleteTask'
 
 
 
@@ -154,60 +150,60 @@ export const columns: ColumnDef<TableListProp>[] = [
     //     return <div className="text-right font-medium">{formatted}</div>
     //     },
     // },
-    {
-        id: "actions",
-        header: "Action",
-        enableHiding: false,
-        cell: ({ row }) => {
-            const payment = row.original
+    // {
+    //     id: "actions",
+    //     header: "Action",
+    //     enableHiding: false,
+    //     cell: ({ row }) => {
+    //         const payment = row.original
 
-            const [showDlg, setShowDlg] = useState(false)
-            const [deleteDlg, setDeleteDlg] = useState(false)
+    //         const [showDlg, setShowDlg] = useState(false)
+    //         const [deleteDlg, setDeleteDlg] = useState(false)
 
-            const title = useRef("")
+    //         const title = useRef("")
 
-            const toggleShowDlg = () => {
-                title.current = "Edit task"
-                setShowDlg(!showDlg);
-            }
-            const toggleDeleteDlg = () => {
-                setDeleteDlg(!deleteDlg);
-            }
+    //         const toggleShowDlg = () => {
+    //             title.current = "Edit task"
+    //             setShowDlg(!showDlg);
+    //         }
+    //         const toggleDeleteDlg = () => {
+    //             setDeleteDlg(!deleteDlg);
+    //         }
 
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-white w-40">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>
-                            <div className='flex items-center space-x-3 text-dark-600'>
-                                <Pencil size={15} />
-                                <Label className='cursor-pointer' onClick={toggleShowDlg}>Edit</Label>
-                            </div>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <div className='flex items-center space-x-3 text-dark-600'>
-                                <Trash2 size={15} />
-                                <Label className='cursor-pointer' onClick={toggleDeleteDlg}>Delete</Label>
-                            </div>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuLabel>Status Update</DropdownMenuLabel>
-                        <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-red-700'><MoveRight size={10} />Pending</span></DropdownMenuItem>
-                        <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-orange-700'><MoveRight size={10} />In Progress</span></DropdownMenuItem>
-                        <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-green-700'><MoveRight size={10} />Complete</span></DropdownMenuItem>
-                    </DropdownMenuContent>
-                    {showDlg && (<CreateTaskDialog title={title} showDlg={showDlg} toggleDlg={toggleShowDlg} />)}
-                    {/* {deleteDlg && (<DeleteTask showDlg={deleteDlg} toggleDeleteDlg={toggleDeleteDlg} />)} */}
-                </DropdownMenu>
-            )
-        },
-    },
+    //         return (
+    //             <DropdownMenu>
+    //                 <DropdownMenuTrigger asChild>
+    //                     <Button variant="ghost" className="h-8 w-8 p-0">
+    //                     <span className="sr-only">Open menu</span>
+    //                     <MoreHorizontal className="h-4 w-4" />
+    //                     </Button>
+    //                 </DropdownMenuTrigger>
+    //                 <DropdownMenuContent align="end" className="bg-white w-40">
+    //                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
+    //                     <DropdownMenuItem>
+    //                         <div className='flex items-center space-x-3 text-dark-600'>
+    //                             <Pencil size={15} />
+    //                             <Label className='cursor-pointer' onClick={toggleShowDlg}>Edit</Label>
+    //                         </div>
+    //                     </DropdownMenuItem>
+    //                     <DropdownMenuItem>
+    //                         <div className='flex items-center space-x-3 text-dark-600'>
+    //                             <Trash2 size={15} />
+    //                             <Label className='cursor-pointer' onClick={toggleDeleteDlg}>Delete</Label>
+    //                         </div>
+    //                     </DropdownMenuItem>
+    //                     <DropdownMenuSeparator />
+    //                     <DropdownMenuLabel>Status Update</DropdownMenuLabel>
+    //                     <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-red-700'><MoveRight size={10} />Pending</span></DropdownMenuItem>
+    //                     <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-orange-700'><MoveRight size={10} />In Progress</span></DropdownMenuItem>
+    //                     <DropdownMenuItem><span className='flex items-center gap-x-3 cursor-pointer text-green-700'><MoveRight size={10} />Complete</span></DropdownMenuItem>
+    //                 </DropdownMenuContent>
+    //                 {showDlg && (<CreateTaskDialog title={title} showDlg={showDlg} toggleDlg={toggleShowDlg} />)}
+    //                 {/* {deleteDlg && (<DeleteTask showDlg={deleteDlg} toggleDeleteDlg={toggleDeleteDlg} />)} */}
+    //             </DropdownMenu>
+    //         )
+    //     },
+    // },
 ]
 
 const TableList = ({ data }: { data: TableListProp[] }) => {

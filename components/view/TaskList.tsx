@@ -1,32 +1,18 @@
-import { useState, useEffect,useRef, useCallback, useMemo } from 'react'
-import SearchCategory from '../SearchCategory'
-import { tasks } from '@/constant'
-import { Button } from "@/components/ui/button"
-import { Pencil, Trash2, Plus, MoreHorizontal, CreditCard, TableProperties, X  } from 'lucide-react'
-
-
-import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue} from "@/components/ui/select"
-import { MdAdd } from 'react-icons/md'
+import { useState } from 'react'
+import { CreditCard, TableProperties, X  } from 'lucide-react'
 
 import CardList from './CardList'
-import TableList from './TableList'
-import { deleteCategoryDocument, getCategory, getTask, getUsers } from '@/lib/actions/user.action';
+import { deleteCategoryDocument} from '@/lib/actions/user.action';
 import GetUseContext from '@/components/context/GetUseContext';
-import { deleteCategory, setCategory, setTask, setUser, setFilterTask } from '../context/GetContext'
-import { Models } from 'node-appwrite';
-
-interface TaskListProp {
-    useridref: string
-}
+import { deleteCategory } from '../context/GetContext'
 
 
-const TaskList = ({useridref}: TaskListProp) => {
+const TaskList = () => {
 
     const [toggleTaskView, setToggleTaskView] = useState(true);
     const { state, dispatch } = GetUseContext()
-    const [ filter, setFilter ] = useState<string>('')
+    // const [ filter, setFilter ] = useState<string>('')
 
-    const dd = useRef("")
 
     const taskPerUser = sessionStorage.getItem("username")
     const newData = state.task.filter(task => task.assignTo === taskPerUser)
@@ -46,32 +32,32 @@ const TaskList = ({useridref}: TaskListProp) => {
         }
     }
    
-    const fetchFilterTask = useCallback(() => {
-        const filterByCategory: CreateTaskParams[] = state.task
-            .filter(e => e.category === filter)
-            .map(e => ({
-                $id: e.$id,
-                task: e.task,
-                assignTo: e.assignTo,
-                category: e.category,
-                assignDate: e.assignDate,
-                submissionDate: e.submissionDate,
-                description: e.description,
-                status: e.status,
-                userId: e.userId
-            }));
-            console.log(filterByCategory)
-        // Only dispatch if the filter result changes
-        if (JSON.stringify(filterByCategory)) {
-           dispatch(setFilterTask(filterByCategory));  // Dispatch only if there's a change
-        }
+    // const fetchFilterTask = () => {
+    //     const filterByCategory: CreateTaskParams[] = state.task
+    //         .filter(e => e.category === filter)
+    //         .map(e => ({
+    //             $id: e.$id,
+    //             task: e.task,
+    //             assignTo: e.assignTo,
+    //             category: e.category,
+    //             assignDate: e.assignDate,
+    //             submissionDate: e.submissionDate,
+    //             description: e.description,
+    //             status: e.status,
+    //             userId: e.userId
+    //         }));
+    //         console.log(filterByCategory)
+    //     // Only dispatch if the filter result changes
+    //     if (JSON.stringify(filterByCategory)) {
+    //        dispatch(setFilterTask(filterByCategory));  // Dispatch only if there's a change
+    //     }
     
-    }, [filter, state.task]);  // Ensure all relevant state variables are included in dependencies
+    // };  // Ensure all relevant state variables are included in dependencies
     // console.log(dd.current)
-    useEffect(() => {
-        // console.log(fetchFilterTask())
-        fetchFilterTask();
-    }, [filter]);
+    // useEffect(() => {
+    //     // console.log(fetchFilterTask())
+    //     fetchFilterTask();
+    // });
 
     // const filterByCategory = () => {
     //     if (filter === '') {
@@ -102,14 +88,14 @@ const TaskList = ({useridref}: TaskListProp) => {
             <section className='flex justify-between items-center border-dashed'>
                 <div className='flex items-center space-x-5'>
                     <div>
-                        <button className='text-sm' onClick={() => setFilter('')}>All</button>
+                        <button className='text-sm' >All</button>
                     </div>
                     {state.category.map((category) => (
-                        <div key={category.$id} className="flex justify-between items-center rounded-md space-x-2 text-black group px-2 py-1 hover:text-green-500">
+                        <div key={category.$id} className="flex justify-between items-center rounded-md space-x-2 text-black dark:text-white group px-2 py-1 hover:text-green-500">
                             <button
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    setFilter(category.category)
+                                    // setFilter(category.category)
                                     
                                 }}
                                 className="flex-grow text-left text-sm"
@@ -118,7 +104,7 @@ const TaskList = ({useridref}: TaskListProp) => {
                             </button>
                             <X 
                                 size={15}
-                                className="text-dark-400 text-base cursor-pointer"
+                                className="shad-primary-btn text-base cursor-pointer"
                                 onClick={(event) => {
                                     event.stopPropagation();
                                     onDeleteCategory(category.$id);
@@ -134,7 +120,7 @@ const TaskList = ({useridref}: TaskListProp) => {
             </section>
 
             {toggleTaskView ? (
-                <section className='grid grid-cols-12 gap-5 remove-scrollbar'>
+                <section className='grid grid-cols-3 gap-4 remove-scrollbar'>
                     {taskPerUser == "Admin" ? state.task.map(task => (
                         <CardList 
                             key={task.$id}
@@ -163,7 +149,7 @@ const TaskList = ({useridref}: TaskListProp) => {
                 </section>
             ) : (
                 <section className=''>
-                    <TableList data={tasks}/>
+                    {/* <TableList data={tasks}/> */}
                 </section>
             )}  
         </div>

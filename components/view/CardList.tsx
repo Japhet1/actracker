@@ -1,29 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import {
-    ContextMenu,
-    ContextMenuCheckboxItem,
-    ContextMenuContent,
-    ContextMenuItem,
-    ContextMenuLabel,
-    ContextMenuRadioGroup,
-    ContextMenuRadioItem,
-    ContextMenuSeparator,
-    ContextMenuShortcut,
-    ContextMenuSub,
-    ContextMenuSubContent,
-    ContextMenuSubTrigger,
-    ContextMenuTrigger,
-  } from "@/components/ui/context-menu"
-  import { Input } from "@/components/ui/input"
+import { useRef, useState } from 'react'
 import { Label } from "@/components/ui/label"
-import {Card,CardContent,CardDescription,CardFooter,CardHeader,CardTitle,
-} from "@/components/ui/card"
-import { Pencil, Trash2, Plus, MoreHorizontal, CreditCard, TableProperties, MoveRight } from 'lucide-react'
+import {CardContent,CardHeader} from "@/components/ui/card"
+import { Pencil, Trash2, MoreHorizontal, MoveRight } from 'lucide-react'
 import CreateTaskDialog from '../form/CreateTaskDialog';
 import DeleteTask from '../DeleteTask'
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
@@ -34,7 +16,7 @@ import { Button } from '../ui/button'
 import GetUseContext from '@/components/context/GetUseContext';
 import { updateTask } from '@/lib/actions/user.action'
 import { editTask } from '../context/GetContext'
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 
 export interface CardListProp {
     // key: string | undefined,
@@ -52,12 +34,11 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
 
     const [showDlg, setShowDlg] = useState(false)
     const [deleteDlg, setDeleteDlg] = useState(false)
-    const { state, dispatch } = GetUseContext()
+    const { dispatch } = GetUseContext()
     const title = useRef("")
     const editData = useRef<CardListProp>()
     const taskId = useRef<string | undefined>("")
     // const statusRef = useRef("")
-    const [statusRef, steStatusRef] = useState<string>("")
 
 
     const userId = sessionStorage.getItem('userId');
@@ -123,15 +104,15 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
     
 
     return (
-        <div className="w-[400px] col-span-4 border bg-white rounded-lg" key={id}>
+        <div className="col-span-1 border bg-white dark:bg-dark-400 dark:border-none rounded-lg" key={id}>
                     <CardHeader >
                         {/* <CardTitle>Create project</CardTitle>
                         <CardDescription>Deploy your new project in one-click.</CardDescription> */}
-                        <div className='flex justify-between'>
+                        <div className='flex justify-between text-sm'>
                             <div>
-                                <Label className='text-lg font-bold'>{category}</Label>
+                                <Label className=' font-bold'>{category}</Label>
                             </div>
-                            <div>
+                            <div className='text-sm'>
                                 <Label 
                                     className={
                                         status === "Pending"? 'text-red-500 font-semibold' : 
@@ -172,13 +153,13 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
                                     </ContextMenuContent>
                                 </ContextMenu> */}
                                 <DropdownMenu>
-                                    <DropdownMenuTrigger asChild className="bg-light-200 p-2 cursor-pointer">
+                                    <DropdownMenuTrigger asChild className="bg-light-200 dark:bg-dark-500 p-2 cursor-pointer">
                                         <Button variant="ghost" className="h-8 w-8 p-0">
                                         <span className="sr-only">Open menu</span>
                                         <MoreHorizontal className="h-4 w-4" />
                                         </Button>
                                     </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className="bg-white w-40">
+                                    <DropdownMenuContent align="end" className="bg-white dark:bg-dark-500 dark:border-none w-40">
                                         
                                         {taskPerUser == "Admin" && (
                                             <>
@@ -215,7 +196,7 @@ const CardList = ({id, task, description, assign, createdAt, submissionDate, sta
                             </div>
                         </div>
                     </CardHeader>
-                    <CardContent className='space-y-2'>
+                    <CardContent className='space-y-2 text-sm'>
                         <div className=''>
                             <Label>Task</Label>
                             <p className='text-dark-700 text-sm'>{task}</p>

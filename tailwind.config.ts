@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import type { Config } from "tailwindcss";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { fontFamily } = require("tailwindcss/defaultTheme");
 
 const config = {
@@ -19,6 +21,16 @@ const config = {
 				"2xl": "1400px",
 			},
 		},
+		// screens: {
+		// 	'tablet': '640px',
+		// 	// => @media (min-width: 640px) { ... }
+
+		// 	'laptop': '1024px',
+		// 	// => @media (min-width: 1024px) { ... }
+
+		// 	'desktop': '1280px',
+		// 	// => @media (min-width: 1280px) { ... }
+		// },
 		extend: {
 			colors: {
 				green: {

@@ -3,7 +3,7 @@ import Image from "next/image";
 
 
 interface SubmitButtonProp {
-    isLoading: boolean
+    isLoading?: boolean
     className?: string
     children: React.ReactNode
     click?: () => void

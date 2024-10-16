@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -12,7 +14,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
-import { Button } from "../ui/button";
 import { EyeOff, Eye } from "lucide-react"
 
 export enum FormFieldType {
@@ -24,7 +25,7 @@ export enum FormFieldType {
     SELECT = "select",
     SKELETON = "skeleton",
     PASSWORD = "password",
-    CATEGORYINPUT = "input"
+    CATEGORYINPUT = "categoryInput"
 }
 
 interface CustomFormFieldProp {
@@ -56,9 +57,9 @@ const RenderField = ({ field, props }: { field: any, props: CustomFormFieldProp}
     switch(fieldType) {
         case FormFieldType.INPUT: 
             return(
-                <div className="flex rounded-md border border-dark-500">
+                <div className="flex rounded-md border dark:bg-dark-500 border-dark-500">
                     {iconSrc && (
-                        <Image className="mx-3" style={{color: "black"}} src={iconSrc} height={24} width={24} alt={iconAlt || "ICON"} />
+                        <Image className="mx-3 " style={{color: "white"}} src={iconSrc} height={24} width={24} alt={iconAlt || "ICON"} />
                     )}
                     <FormControl>
                         <Input className="shad-input border-0" placeholder={placeholder} {...field} />
@@ -75,7 +76,7 @@ const RenderField = ({ field, props }: { field: any, props: CustomFormFieldProp}
             )
         case FormFieldType.PASSWORD:
             return (
-                <div className="flex rounded-md border border-dark-500">
+                <div className="flex rounded-md border border-dark-500 dark:bg-dark-500">
                     <FormControl>
                         <Input
                             type={showPassword ? "text" : "password"}
@@ -120,19 +121,19 @@ const RenderField = ({ field, props }: { field: any, props: CustomFormFieldProp}
             )
         case FormFieldType.DATE_PICKER:
             return(
-                <div className="flex rounded-md bg-light-200 border border-dark-500">
+                <div className="flex rounded-md bg-light-200 dark:bg-dark-500 border dark:border-dark-500">
                     {iconSrc && (
-                        <Image className="mx-3" src={iconSrc} height={24} width={24} alt={iconAlt || "ICON"} />
+                        <Image className="mx-3 dark:text-white" src={iconSrc} height={24} width={24} alt={iconAlt || "ICON"} />
                     )}
                     <FormControl>
                         <DatePicker 
-                        selected={field.value} 
-                        onChange={(date) => field.onChange(date)} 
-                        dateFormat={dateFormat ?? 'MM/dd/yyyy'}
-                        showTimeSelect={showTimeSelect ?? false}
-                        timeInputLabel="Time:"
-                        wrapperClassName="date-picker"
-                        placeholderText="select date"
+                            selected={field.value} 
+                            onChange={(date) => field.onChange(date)} 
+                            dateFormat={dateFormat ?? 'MM/dd/yyyy'}
+                            showTimeSelect={showTimeSelect ?? false}
+                            timeInputLabel="Time:"
+                            wrapperClassName="date-picker"
+                            placeholderText="select date"
                         
                         />
                     </FormControl>

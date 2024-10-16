@@ -199,7 +199,7 @@
 	}
 
 	.shad-input {
-		@apply bg-light-200 placeholder:text-dark-600 border-dark-500 h-11 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+		@apply bg-light-200 dark:bg-dark-500 placeholder:text-dark-600 border-dark-500 h-11 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
 	}
 
 	.shad-input-icon {
@@ -208,7 +208,7 @@
 	}
 
 	.shad-textArea {
-		@apply bg-light-200 placeholder:text-dark-600 border-dark-500 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+		@apply bg-light-200 dark:bg-dark-500 placeholder:text-dark-600 border-dark-500 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
 	}
 
 	.shad-combobox-item {
@@ -220,11 +220,11 @@
 	}
 
 	.shad-select-trigger {
-		@apply bg-light-200  placeholder:text-dark-600 border-dark-500 h-11 focus:ring-0 focus:ring-offset-0 !important;
+		@apply bg-light-200 dark:bg-dark-500 placeholder:text-dark-600 border-dark-500 h-11 focus:ring-0 focus:ring-offset-0 !important;
 	}
 
 	.shad-select-content {
-		@apply bg-light-200 border-dark-500 !important;
+		@apply bg-light-200 border-dark-500 dark:bg-dark-500 !important;
 	}
 
 	.shad-dialog {
@@ -274,7 +274,7 @@
 
 	/* =====  REACT DATE PICKER OVERRIDES */
 	.date-picker {
-		@apply overflow-hidden bg-light-200 border-transparent w-full placeholder:text-dark-500 h-11 text-14-medium rounded-md px-3 outline-none focus:outline-none !important;
+		@apply overflow-hidden bg-light-200 dark:bg-dark-500 border-transparent w-full placeholder:text-dark-500 h-11 text-14-medium rounded-md px-3 outline-none focus:outline-none !important;
 	}
 	
 }
@@ -296,14 +296,14 @@
 	/* background-color: #1a1d21 !important;
 	border-color: #363a3d !important; 
 	color: #abb8c4 !important; */
-	@apply bg-light-200 text-dark-400
+	@apply bg-light-200 text-dark-400 dark:bg-dark-500 dark:border-dark-400
 }
 
 .react-datepicker__current-month,
 .react-datepicker__day-name,
 .react-datepicker-time__header {
   	/* color: #ffffff !important; */
-	@apply bg-light-200 text-dark-400
+	@apply bg-light-200 text-dark-400 dark:bg-dark-500 dark:text-light-200
 }
 
 .react-datepicker__triangle {
@@ -320,7 +320,7 @@
 	/* background-color: #1a1d21 !important; */
 	width: 100%;
 	outline: none;
-	@apply bg-light-200
+	@apply bg-light-200 dark:bg-dark-500
 }
 
 .react-datepicker__day--selected {
